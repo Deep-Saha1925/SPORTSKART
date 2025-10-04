@@ -1,6 +1,4 @@
-const { default: mongoose } = require('mongoose');
-const moongoose = require('mongoose');
-const { text } = require('stream/consumers');
+const { mongoose } = require('mongoose');
 
 const productSchema = mongoose.Schema({
     image: String,

@@ -1,7 +1,4 @@
-const { default: mongoose } = require('mongoose');
 const moongoose = require('mongoose');
-
-monngoose.connect('mongodb://localhost:27017/sprtscart')
 
 const userSchema = mongoose.Schema({
     fullname: String,
