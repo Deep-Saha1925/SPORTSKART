@@ -3,9 +3,8 @@ const router = express.Router();
 const upload = require("../config/multerConfig");
 const productModel = require('../models/product_model');
 
-router.get('/create', upload.single("image") , async (req, res) => {
+router.post('/create', upload.single("image") , async (req, res) => {
     try{
-
         let {name, price, discount, bgcolor, panelcolor, textcolor} = req.body;
     
         let product = await productModel.create({
@@ -24,5 +23,4 @@ router.get('/create', upload.single("image") , async (req, res) => {
     }
 });
 
-
-module.exports = app;
+module.exports = router;

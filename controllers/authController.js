@@ -1,15 +1,19 @@
 const userModel = require('../models/user_model');
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const { generateToken } = require('../utils/generate_token')
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { generateToken } = require('../utils/generate_token');
+const product_model = require('../models/product_model');
+const session = require('express-session');
+const flash = require('connect-flash');
 
-module.exports.registerUser =  async (req, res) => {
+module.exports.registerUser = async (req, res) => {
     try {
         let {email, fullname, password } = req.body;
         let user = await userModel.findOne({email: email})
 
         if(user){
-            return res.status(401).send("Account already exists..");
+            req.flash("error", "Account already exists..");
+            return res.redirect("/");
         }
 
         bcrypt.genSalt(10, (err, salt) => {
@@ -22,7 +26,8 @@ module.exports.registerUser =  async (req, res) => {
                     
                     let token = generateToken(user);
                     res.cookie('token', token);
-                    res.send('User registered successfully');
+                    req.flash("success", "User Registered Successfully, please Login.");
+                    return res.redirect("/");
                 }
             });
         });
@@ -41,16 +46,17 @@ module.exports.loginUser = async (req, res) => {
         return res.redirect("/");
     }
 
-    bcrypt.compare(password, user.password, (err, result) =>{
+    bcrypt.compare(password, user.password, async (err, result) =>{
         if(result) {
             let token = generateToken(user);
+            let products = await product_model.find();
             res.cookie("token", token);
-            res.render("shop")
+            res.render("shop", {products});
         }else{
             req.flash("error", "Email or password incorrect.");
             return res.redirect("/");
         }
-    })
+    });
 };
 
 module.exports.logout = async (req, res) => {
