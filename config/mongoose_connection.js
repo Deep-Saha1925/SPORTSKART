@@ -1,12 +1,16 @@
 const mongoose = require('mongoose');
+const config = require('config');
+require('dotenv').config();
+
+const dbuger = require('debug')('development:mongoose');
 
 mongoose
-    .connect('mongodb://localhost:27017/sprtscart')
+    .connect(`${config.get('MONGODB_URI')}/${config.get('DB_NAME')}`)
     .then(function(req, res){
-        console.log("Database connected successfully");
+        dbuger("Database connected successfully");
     })
     .catch(function(err){
-        console.log(err);
+        dbuger(err);
     });
 
 module.exports = mongoose.connection;
