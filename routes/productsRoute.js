@@ -1,8 +1,27 @@
 const express = require('express');
-const app = express();
+const router = express.Router();
+const upload = require("../config/multerConfig");
+const productModel = require('../models/product_model');
 
-app.get('/', (req, res) => {
-    res.send('Products Route');
+router.get('/create', upload.single("image") , async (req, res) => {
+    try{
+
+        let {name, price, discount, bgcolor, panelcolor, textcolor} = req.body;
+    
+        let product = await productModel.create({
+            image: req.file.buffer,
+            price,
+            discount, 
+            bgcolor, 
+            panelcolor, 
+            textcolor
+        });
+    
+        req.flash("success", "Product created successfully");
+        res.redirect("/owners/admin");
+    }catch(err){
+        res.send(err.message);
+    }
 });
 
 

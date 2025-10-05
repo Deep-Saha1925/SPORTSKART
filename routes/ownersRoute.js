@@ -3,7 +3,8 @@ const app = express();
 const ownerModel = require('../models/owner_model');
 
 app.get('/admin', (req, res) => {
-    res.render("createproducts");
+    let success = req.flash("success")
+    res.render("createproducts", {success});
 });
 
 if(process.env.NODE_ENV === 'development'){
